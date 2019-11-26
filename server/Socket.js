@@ -13,8 +13,8 @@ SocketIO.on('connection', function (socket) {
     //Disconnect from Server
 
     socket.emit('fromPassenger', {
-        Username: "Udara",
-        Message: "This is a Message"
+        username: "Udara",
+        message: "This is a Message from Udara"
     });
 
 
