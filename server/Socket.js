@@ -9,39 +9,66 @@ app.get('/data', ((req, res) => {
 app.listen('8080', () => console.log('8080 Running'));
 
 SocketIO.on('connection', function (socket) {
-    console.log('connected');
-
-
-
+    console.log('connected')
     //Disconnect from Server
+
+    socket.emit('fromPassenger', {
+        Username: "Udara",
+        Message: "This is a Message"
+    });
+
+
     socket.on('disconnect', function () {
         console.log('client disconnect from server');
     });
 
+
     socket.on('lookingForPassengers', driverResponse => {
-        //driver ID
-        //driver Socket ID
-        //driver vehicle type
-        console.log(driverResponse);
+
+        console.log(driverResponse)
+        var driverobj = {
+            "driverID": driverResponse.driverID,
+            "driverSocketID": driverResponse.driverSocketID,
+            "driverVehicleType": driverResponse.driverVehicleType
+        }
+        driverarray.push(driverobj);
     })
 
     socket.on('lookingForDrivers', passengerResponse => {
-        //passenger ID
-        //passenger Socket ID
-        //start Lon
-        //start lat
-        //end lon
-        //end lat
-        //vehicle type
 
         console.log(passengerResponse);
+        var passengerobj = {
+            "passengerID": passengerResponse.passengerID,
+            "passengerSocketID": passengerResponse.passengerSocketID,
+            "startLatitude": passengerResponse.startLatitude,
+            "startLongitude": passengerResponse.startLongitude,
+            "endLatitude": passengerResponse.endLatitude,
+            "endLongitude": passengerResponse.endLongitude
+        }
+
+        passengerarray.push(passengerobj);
+
+        // if (driverArray.driverVehicleType === passengerArray.PassengerVehicleType) {
+
+        //     socket.broadcast.to(driverArray[driverArray.length - 1].driverSocketID).emit('ServerToDriver', passengerArray[passengerArray.length - 1]);
+
+        // } else {
+        //     console.log('Vehicle Type Mismatch');
+        // }
+
     });
 
-    // socket.on('driverAccept', driverAccept => {
-    //     //driver Longitude
-    //     //driver Latitude
-    //     //passengerSocketID
-    //     socket.broadcast.to(driverAccept.passengerSocketID).emit('fromDriver', driverAccept);
-    // })
+  
+
+    socket.on('driverAccept', driverData => {
+        console.log(driverData.passengerSocketID);
+
+        cron.schedule("* * * * * * * * *", function () {
+            socket.broadcast.to(driverData.passengerSocketID).emit('fromServer', driverData);
+
+        });
+
+    })
+
 
 })
