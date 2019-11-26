@@ -1,85 +1,17 @@
 const express = require("express");
-const router = express.Router();
-const axios = require('axios');
-const mongo = require('mongodb').MongoClient;
-const SocketIO = require('socket.io').listen(4040, { secure: true }).sockets;
-const _ = require('lodash');
-const NodeCache = require("node-cache");
-const driverCache = new NodeCache();
-const passengerCache = new NodeCache();
+const SocketIO = require('socket.io').listen(5050, { secure: true }).sockets;
+var app = express();
 
-let driverarray = []
-let taxiSocket = null;
-let PassengerSocket = null;
+app.get('/data', ((req, res) => {
+    res.json('Hello Server')
+}))
 
-// mongo.connect('mongodb://127.0.0.1/TaxiAppServer', function (err, db) {
-
-// })
-
+app.listen('8080', () => console.log('8080 Running'));
 
 SocketIO.on('connection', function (socket) {
     console.log('connected');
 
-    //Data to Admin
-    // socket.on('activevehicles', vehicleData => {
-    //     console.log(vehicleData);
-    // });
 
-    // //Sending Driver Location to the Passenger
-    // socket.on('driverLocation', (driverLocation) => {
-    //     console.log(driverLocation);
-    //     // PassengerSocket.emit('driverLocation', driverLocation);
-    // });
-
-    // //Ger Driver Looking for Passenger
-    // socket.on('lookingforPassenger', (driverID) => {
-    //     taxiSocket = socket;
-    // });
-
-
-    // ///Socket New Update
-
-    // //Get Driver Data When App is on
-    // socket.on('DriverData', (res) => {
-    //     res.map((item, index) => {
-    //         if (res.driverVehicleType === 'Car') {
-
-    //             var obj = {
-    //                 "driverID": item.driverID,
-    //                 "driverSocketID": item.driverSocketID,
-    //                 'Status': item.status
-    //             }
-    //             carDriverArray.push(obj);
-
-    //         } else if (res.driverVehicleType === 'Van') {
-    //             var obj = {
-    //                 "driverID": item.driverID,
-    //                 "driverSocketID": item.driverSocketID,
-    //                 "Status": item.status
-    //             }
-    //             vanDriverArray.push(obj)
-    //         } else if (res.driverVehicleType === 'Bus') {
-    //             var obj = {
-    //                 "driverID": item.driverID,
-    //                 "driverSocketID": item.driverSocketID,
-    //                 "Status": item.status
-    //             }
-    //             busDriverArray.push(obj)
-    //         }
-
-    //     })
-    // })
-
-    // //Get Passenger Data When App is On
-    // socket.on('PassengerData', (res) => {
-    //     res.map((item, index) => {
-    //         var objPassenger = {
-    //             "PassengerID": item.passengerID,
-    //             "passengerSocketID": item.passengerSocketID
-    //         }
-    //         passengerDataArray.push(objPassenger);
-    //     })
-    // })
 
     //Disconnect from Server
     socket.on('disconnect', function () {
@@ -90,11 +22,7 @@ SocketIO.on('connection', function (socket) {
         //driver ID
         //driver Socket ID
         //driver vehicle type
-
-
-        console.log(driverResponse)
-        driverarray.push(driverResponse);
-        console.log(driverarray[0].driverSocketID);
+        console.log(driverResponse);
     })
 
     socket.on('lookingForDrivers', passengerResponse => {
@@ -106,16 +34,7 @@ SocketIO.on('connection', function (socket) {
         //end lat
         //vehicle type
 
-        passengerCache.set("1", passengerResponse)
-        console.log(passengerCache.get(1));
-
-        console.log(driverCache.get(1).driverSocketID);
-        // console.log(passengerCache.get(1).passengerSocketID);
-
-        // socket.broadcast.to(driverCache.get(1).driverSocketID).emit('fromPassenger', { "Data": passengerCache.get(2) });
-
-        // socket.broadcast.to(passengerDataArray[0].passengerSocketID).emit('fromServer', "You Have Found a Driver");
-
+        console.log(passengerResponse);
     });
 
     // socket.on('driverAccept', driverAccept => {
@@ -126,5 +45,3 @@ SocketIO.on('connection', function (socket) {
     // })
 
 })
-
-module.exports = router;
