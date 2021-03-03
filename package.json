@@ -24,7 +24,7 @@
     "morgan": "~1.9.1",
     "node-cache": "^5.0.2",
     "node-fetch": "^2.6.0",
-    "pug": "^2.0.4",
+    "pug": "^3.0.1",
     "node-cron": "2.0.3",
     "socket.io": "^2.3.0",
     "geolib": "^3.0.4"
